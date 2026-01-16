@@ -1,0 +1,47 @@
+from dataclasses import dataclass
+from typing import List
+import numpy as np
+
+@dataclass
+class StaticParams:
+    BEST_POINT_CONV_SIZE = 80  # Reduced: Don't smooth the gap too much on small tracks
+    EDGE_GUARD_DEG = 12.0      
+    TTC_HARD_BRAKE = 0.55      
+    TTC_SOFT_BRAKE = 0.9       
+    FWD_WEDGE_DEG = 8.0        
+    STEER_RATE_LIMIT = 0.3     # Increased: Real servos need permission to move faster
+    CENTER_BIAS_ALPHA = 0.5
+
+@dataclass
+class DynamicParams:
+    BUBBLE_RADIUS: int 
+    MAX_LIDAR_DIST: float 
+    CURRENT_SPEED: float
+    MAX_STEER_ABS: float
+    STEER_SMOOTH_ALPHA: float 
+    PREPROCESS_CONV_SIZE: int
+
+    def to_array(self) -> np.ndarray:
+        "Converts objects to an array"
+        return np.array([
+            self.BUBBLE_RADIUS,
+            self.MAX_LIDAR_DIST,
+            self.CURRENT_SPEED,
+            self.MAX_STEER_ABS,
+            self.STEER_SMOOTH_ALPHA,
+            self.PREPROCESS_CONV_SIZE
+        ])
+    
+    @staticmethod
+    def from_array(arr:np.ndarray) -> "DynamicParams":
+        "Converts from array to data class"
+        # use "forward reference" bc in class using
+        return DynamicParams(
+            BUBBLE_RADIUS=arr[0],
+            MAX_LIDAR_DIST=arr[1],
+            CURRENT_SPEED=arr[2],
+            MAX_STEER_ABS=arr[3],
+            STEER_SMOOTH_ALPHA=arr[4],
+            PREPROCESS_CONV_SIZE=arr[5]
+        )
+ 
