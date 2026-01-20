@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.gaussian_process import GaussianProcessClassifier, GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C, Kernel
 from .params import DynamicParams, StaticParams
+from typing import cast
 
 """
 Using a Gaussian Process Regressor Model to enhance parameter tuning in FTG algorithm where...
@@ -61,5 +62,16 @@ class Model:
         # mu = expected lap time, sigma = uncertainty
         mu, sigma = self.gp.predict(candidates, return_std=True)
 
-        
+        sigma = cast(np.ndarray, sigma)
 
+        # acquisition function
+        # score = mean - (exploration weight * uncertainty)
+        # small mean (faster lap) and high uncertainty (explore more)
+        exploration_weight = 1.0
+        scores = mu - (exploration_weight * sigma)
+
+        # pcik best
+        best_idx = np.argmin(scores)
+        best_arr = candidates[best_idx]
+
+        return DynamicParams.from_array(best_arr)

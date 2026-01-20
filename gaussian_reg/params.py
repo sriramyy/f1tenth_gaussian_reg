@@ -37,11 +37,11 @@ class DynamicParams:
         "Converts from array to data class"
         # use "forward reference" bc in class using
         return DynamicParams(
-            BUBBLE_RADIUS=arr[0],
-            MAX_LIDAR_DIST=arr[1],
-            CURRENT_SPEED=arr[2],
-            MAX_STEER_ABS=arr[3],
-            STEER_SMOOTH_ALPHA=arr[4],
-            PREPROCESS_CONV_SIZE=arr[5]
+            BUBBLE_RADIUS=int(arr[0]),
+            MAX_LIDAR_DIST=float(arr[1]),
+            CURRENT_SPEED=float(arr[2]),
+            MAX_STEER_ABS=float(arr[3]),
+            STEER_SMOOTH_ALPHA=float(arr[4]),
+            PREPROCESS_CONV_SIZE=int(arr[5])
         )
- 
+    
