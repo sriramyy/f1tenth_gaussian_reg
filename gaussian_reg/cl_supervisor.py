@@ -28,12 +28,12 @@ def main():
 
 def inputParams(model:Model):
     try:
-        print("Parameters: BUBBLE, MAX_LIDAR_DIST, STRAIGHT_SPEED, CORNER_SPEED, MAX_SPEED, MAX_STEER_ABS, STEER_SMOOTH_ALPHA, PREPROCESS_CONV_SIZE")
-        params_raw = input("Enter the 8 parameters (comma separated): ")
+        print("Parameters: BUBBLE, MAX_LIDAR_DIST, STRAIGHT_SPEED, CORNER_SPEED, MAX_SPEED, STEER_SMOOTH_ALPHA, PREPROCESS_CONV_SIZE")
+        params_raw = input("Enter the 7 parameters (comma separated): ")
         params = [float(p.strip()) for p in params_raw.split(",")]
         
-        if len(params) != 8:
-            print(f"Error: Expected 8 parameters, got {len(params)}.")
+        if len(params) != 7:
+            print(f"Error: Expected 7 parameters, got {len(params)}.")
             return
 
         params_obj = DynamicParams.from_array(np.array(params))
@@ -51,8 +51,8 @@ def getParams(model:Model):
 
     params_obj = model.request()
     params = params_obj.to_array()
-    # Integers: bubble_radius (0) and preprocess_conv_size (7)
-    formatted = ", ".join([f"{p:.2f}" if i != 0 and i != 7 else str(int(p)) for i, p in enumerate(params)])
+    # Integers: bubble_radius (0) and preprocess_conv_size (6)
+    formatted = ", ".join([f"{p:.2f}" if i != 0 and i != 6 else str(int(p)) for i, p in enumerate(params)])
     print(f"\n Suggested Params: {formatted}")
 
 

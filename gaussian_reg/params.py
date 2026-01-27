@@ -19,7 +19,6 @@ class DynamicParams:
     STRAIGHT_SPEED: float
     CORNER_SPEED: float
     SPEED_MAX: float
-    MAX_STEER_ABS: float
     STEER_SMOOTH_ALPHA: float 
     PREPROCESS_CONV_SIZE: int
 
@@ -31,7 +30,6 @@ class DynamicParams:
             self.STRAIGHT_SPEED,
             self.CORNER_SPEED,
             self.SPEED_MAX,
-            self.MAX_STEER_ABS,
             self.STEER_SMOOTH_ALPHA,
             self.PREPROCESS_CONV_SIZE
         ])
@@ -46,8 +44,7 @@ class DynamicParams:
             STRAIGHT_SPEED=float(arr[2]),
             CORNER_SPEED=float(arr[3]),
             SPEED_MAX=float(arr[4]),
-            MAX_STEER_ABS=float(arr[5]),
-            STEER_SMOOTH_ALPHA=float(arr[6]),
-            PREPROCESS_CONV_SIZE=int(arr[7])
+            STEER_SMOOTH_ALPHA=float(arr[5]),
+            PREPROCESS_CONV_SIZE=int(arr[6])
         )
     

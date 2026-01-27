@@ -22,9 +22,9 @@ y - Lap times
 class Model:
     def __init__(self, save_file:str = "model_data.pkl") -> None:
         # define bounds for each parameter
-        # [bubble, lidar, straight_speed, corner_speed, speed_max, steer, alpha, conv]
-        self.bounds_min = np.array([20, 1.0, 1.0, 1.0, 1.0, 0.4, 0.0, 1])
-        self.bounds_max = np.array([100, 8.0, 8.0, 5.0, 7.0, 1.0, 0.9, 10])
+        # [bubble, lidar, straight_speed, corner_speed, speed_max, alpha, conv]
+        self.bounds_min = np.array([20, 1.0, 1.0, 1.0, 1.0, 0.0, 1])
+        self.bounds_max = np.array([100, 8.0, 8.0, 5.0, 7.0, 0.9, 10])
 
         # create the kernel which determines hwo smooth the funciton is
         kernel = C(1.0,(0.0001,10000)) * RBF(1.0,(0.001,1000))
@@ -67,7 +67,7 @@ class Model:
         # generate 1000 random candidates
         # might need to increase to 5k-10k if car not improving
         candidates = np.random.uniform(
-            self.bounds_min, self.bounds_max, size=(1000,8)
+            self.bounds_min, self.bounds_max, size=(1000,7)
         )
         
         # predict performance
