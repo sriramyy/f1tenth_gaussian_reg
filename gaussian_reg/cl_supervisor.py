@@ -4,6 +4,9 @@ import numpy as np
 
 def main():
     model = Model()
+    
+    # Try to load existing data
+    model.load()
 
     print("[ ] Welcome to the command line supervisor")
     print("[ ] To use, enter either `I` to input parameters or")
@@ -24,21 +27,23 @@ def main():
 
 
 def inputParams(model:Model):
-    params_raw = input("Enter the parameters separated with commas (ex. 20, 1.0, 0.5...): ")
+    try:
+        print("Parameters: BUBBLE, MAX_LIDAR_DIST, STRAIGHT_SPEED, CORNER_SPEED, MAX_SPEED, MAX_STEER_ABS, STEER_SMOOTH_ALPHA, PREPROCESS_CONV_SIZE")
+        params_raw = input("Enter the 8 parameters (comma separated): ")
+        params = [float(p.strip()) for p in params_raw.split(",")]
+        
+        if len(params) != 8:
+            print(f"Error: Expected 8 parameters, got {len(params)}.")
+            return
 
-    # split the params into a list of params
-    params = [float(p.strip()) for p in params_raw.split(",")]
-
-    # convert into a dynamic params object
-    params_obj = DynamicParams.from_array(np.array(params))
-
-    # now need to get the lap time to input the params
-    laptime_raw = input("Enter the laptime in seconds (ex. 10.3): ")
-    laptime = float(laptime_raw)
-
-    model.record(params_obj, laptime)
-
-    print("Successfully recorded parameters and laptime into the model")
+        params_obj = DynamicParams.from_array(np.array(params))
+        laptime = float(input("Enter laptime (s): "))
+        
+        model.record(params_obj, laptime)
+        model.save()  # Auto-save after each recording
+        print("Data recorded successfully.")
+    except ValueError:
+        print("Invalid input! Please enter numbers only.")
 
 
 def getParams(model:Model):
@@ -46,7 +51,9 @@ def getParams(model:Model):
 
     params_obj = model.request()
     params = params_obj.to_array()
-    print(f"Suggested Parameters: {params}")
+    # Integers: bubble_radius (0) and preprocess_conv_size (7)
+    formatted = ", ".join([f"{p:.2f}" if i != 0 and i != 7 else str(int(p)) for i, p in enumerate(params)])
+    print(f"\n Suggested Params: {formatted}")
 
 
 if __name__ == "__main__":

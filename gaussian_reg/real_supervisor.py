@@ -13,15 +13,21 @@ def main():
     print("[ ] Commands:")
     print("[ ] [ S ] Start Process, Sets (0,0)")
     print("[ ] [ R ] Car has been physically reset (0,0)")
-    print("[ ] [ . ] ")
+    print("[ ] [ h ] Get information about parameters")
 
     while True:
-        inp = input("Select option (S,R,)")
+        inp = input("Select option (S,R,)").strip().upper()
         if inp is "S":
             startProcess(model)
         elif inp is "R":
             print("")
             # TODO: implement this
+        elif inp is "H":
+            # help
+            print("help")
+        else:
+            print("Invalid Command")
+
 
 
 def startProcess(model:Model):
@@ -65,6 +71,7 @@ def runFTG(params:DynamicParams, start_location:tuple) -> bool:
 
 def getLocation() -> tuple:
     return (0,0)
+
 
 if __name__ == "__main__":
     main()
