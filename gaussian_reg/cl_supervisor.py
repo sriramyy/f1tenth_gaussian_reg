@@ -9,22 +9,65 @@ def main():
     model.load()
 
     print("[ ] Welcome to the command line supervisor")
-    print("[ ] To use, enter either `I` to input parameters or")
-    print("    or `G` to get parameters.")
+    print("[ ] To use, enter either `I` to input parameters")
+    print("    or `G` to get parameters or `T` to get and test parameters.")
     print("------------------------")
     
     while True:
-        option = input("\nEnter option (I/G) or Q to quit: ").strip().upper()
+        option = input("\nEnter option ([I]nput/[G]et/[T]est/[H]istory) or Q to quit: ").strip().upper()
         if option == "I":
             inputParams(model)
         elif option == "G":
             getParams(model)
+        elif option == "T":
+            # testing mode, so do both
+            second_option = input("\nWhich type of testing? ([B]est/[E]xploration)").upper()
+            testingMode(model, second_option)
+        elif option == "H":
+            historyMode(model)
         elif option == "Q":
             print("Exiting...")
             break
         else:
             print("Invalid option. Enter I, G, or Q.")
 
+
+def historyMode(model:Model):
+    "Prints the history of the model (Best lap or all laps)"
+
+    option = input("\nEnter option ([B]est Lap, [A]ll laps): ").upper()
+    if option == "B" or option == "":
+        if len(model.y_history) == 0:
+            print("No lap data recorded yet")
+            return
+        best_idx = np.argmin(model.y_history)
+        best_laptime = model.y_history[best_idx]
+        best_params = DynamicParams.from_array(model.X_history[best_idx])
+        print(f"\n[BEST LAP] Laptime: {best_laptime:.4f}s , Params: {best_params.format()}")
+    elif option == "A":
+        print(f"Not implemented yet!")
+    # TODO: implement the all laps printing
+
+def testingMode(model:Model, option:str="Exploration"):
+    """
+    mode for testing so gets and inputs the params
+
+    option  - "Exploration" - exploration-based testing
+            - "Best" - tries to find best params
+    """
+    # first get the parameters to test
+    print("Getting parameters to test...")
+    if option.upper()=="EXPLORATION": type = ""
+    if option.upper()=="BEST": type = "best"
+    params_obj = model.request(type)
+
+    # now test the parameters and get laptime from test
+    print(f"Testing parameters: {params_obj.format()}")
+    laptime = float(input("Enter laptime (s): "))
+
+    model.record(params_obj, laptime)
+    model.save()
+    print("Data recorded successfully")
 
 def inputParams(model:Model):
     try:
@@ -49,11 +92,11 @@ def inputParams(model:Model):
 def getParams(model:Model):
     print("Getting parameters that the model suggests to test...")
 
-    params_obj = model.request()
-    params = params_obj.to_array()
-    # Integers: bubble_radius (0) and preprocess_conv_size (6)
-    formatted = ", ".join([f"{p:.2f}" if i != 0 and i != 6 else str(int(p)) for i, p in enumerate(params)])
-    print(f"\n Suggested Params: {formatted}")
+    params_obj_explore = model.request()
+    params_obj_best = model.request("best")
+
+    print(f"\n Suggested EXPLORATION Params: {params_obj_explore.format()}")
+    print(f" Suggested BEST Params: {params_obj_best.format()}")
 
 
 if __name__ == "__main__":

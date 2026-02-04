@@ -19,8 +19,14 @@ class DynamicParams:
     STRAIGHT_SPEED: float
     CORNER_SPEED: float
     SPEED_MAX: float
-    STEER_SMOOTH_ALPHA: float 
+    STEER_SMOOTH_ALPHA: float
     PREPROCESS_CONV_SIZE: int
+
+
+    def format(self) -> str:
+        "Converts objects to a formatted array"
+        return ", ".join([f"{p:.2f}" if i != 0 and i != 6 else str(int(p)) for i, p in enumerate(self.to_array())])
+
 
     def to_array(self) -> np.ndarray:
         "Converts objects to an array"
@@ -34,6 +40,7 @@ class DynamicParams:
             self.PREPROCESS_CONV_SIZE
         ])
     
+
     @staticmethod
     def from_array(arr:np.ndarray) -> "DynamicParams":
         "Converts from array to data class"
@@ -47,4 +54,3 @@ class DynamicParams:
             STEER_SMOOTH_ALPHA=float(arr[5]),
             PREPROCESS_CONV_SIZE=int(arr[6])
         )
-    

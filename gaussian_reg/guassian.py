@@ -51,8 +51,15 @@ class Model:
         print(f"[MODEL] Learned lap time {laptime:.4f}s")
     
     
-    def request(self) -> DynamicParams:
-        "Request the best next params to test"
+    def request(self, type:str="") -> DynamicParams:
+        """ Request the best next params to test
+        type:str
+            "" - standard exploration-based
+            "best" - get predicted best lap
+            ""
+        """
+
+        # TODO: implement more request types 
         
         # situation A: if in first x laps give a guess
         if len(self.X_history) < 3:
@@ -76,17 +83,22 @@ class Model:
 
         sigma = cast(np.ndarray, sigma)
 
-        # acquisition function
-        # score = mean - (exploration weight * uncertainty)
-        # small mean (faster lap) and high uncertainty (explore more)
-        # for exploraton weight::
-        #   high - priortize testing params it doesn't know about
-        #   low - focus on fine tuning params it already knows about
-        exploration_weight = 1.0
-        scores = mu - (exploration_weight * sigma)
+        # acquisition function based on request type
+        if type == "best":
+            # Fine-tuning mode: prioritize predicted best lap time (lowest mu)
+            scores = mu
+        else:
+            # Standard exploration mode: balance exploitation and exploration
+            # score = mean - (exploration weight * uncertainty)
+            # small mean (faster lap) and high uncertainty (explore more)
+            # for exploraton weight::
+            #   high - priortize testing params it doesn't know about
+            #   low - focus on fine tuning params it already knows about
+            exploration_weight = 1.0
+            scores = mu - (exploration_weight * sigma)
 
-        # pcik best
-        # best meaning either very fast or very unknown 
+        # pick best
+        # best meaning either very fast (fine-tuning) or very unknown (exploration)
         best_idx = np.argmin(scores)
         best_arr = candidates[best_idx]
 
@@ -133,3 +145,8 @@ class Model:
         except Exception as e:
             print(f"[MODEL] Error loading data: {e}")
             return False
+
+
+    def getInformation(self, type:str):
+        pass
+
